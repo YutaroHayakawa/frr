@@ -716,6 +716,8 @@ AC_ARG_ENABLE([pcre2posix],
   AS_HELP_STRING([--enable-pcre2posix], [enable using PCRE2 Posix libs for regex functions]))
 AC_ARG_ENABLE([fpm],
   AS_HELP_STRING([--enable-fpm], [enable Forwarding Plane Manager support]))
+AC_ARG_ENABLE([dp-bpf],
+  AS_HELP_STRING([--enable-dp-bpf], [enable BPF DPlane support]))
 AC_ARG_ENABLE([werror],
   AS_HELP_STRING([--enable-werror], [enable -Werror (recommended for developers only)]))
 AC_ARG_ENABLE([cumulus],
@@ -2028,6 +2030,18 @@ if test "$enable_dp_dpdk" = "yes"; then
   ])
 fi
 
+dnl ---------
+dnl BPF
+dnl ---------
+if test "$enable_dp_bpf" = "yes"; then
+  PKG_CHECK_MODULES([BPF], [libbpf], [
+    AC_DEFINE([HAVE_BPF], [1], [Enable BPF backend])
+    BPF=true
+  ], [
+    AC_MSG_ERROR([configuration specifies --enable-dp-bpf but libbpf is not found])
+  ])
+fi
+
 dnl -----
 dnl LTTng
 dnl -----
@@ -2752,6 +2766,7 @@ AM_CONDITIONAL([VRRPD], [test "$enable_vrrpd" != "no"])
 AM_CONDITIONAL([PATHD], [test "$enable_pathd" != "no"])
 AM_CONDITIONAL([PATHD_PCEP], [test "$enable_pathd" != "no"])
 AM_CONDITIONAL([DP_DPDK], [test "$enable_dp_dpdk" = "yes"])
+AM_CONDITIONAL([DP_BPF], [test "$enable_dp_bpf" = "yes"])
 
 AC_CONFIG_FILES([Makefile],[
 	test "$enable_dev_build" = "yes" && makefile_devbuild="--dev-build"

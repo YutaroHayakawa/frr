@@ -234,6 +234,14 @@ module_LTLIBRARIES += zebra/dplane_fpm_nl.la
 zebra_dplane_fpm_nl_la_SOURCES = zebra/dplane_fpm_nl.c
 zebra_dplane_fpm_nl_la_LDFLAGS = $(MODULE_LDFLAGS)
 zebra_dplane_fpm_nl_la_LIBADD  =
+
+if DP_BPF
+module_LTLIBRARIES += zebra/dplane_bpf.la
+
+zebra_dplane_bpf_la_SOURCES = zebra/dplane_bpf.c
+zebra_dplane_bpf_la_LDFLAGS = $(MODULE_LDFLAGS) -lbpf
+zebra_dplane_bpf_la_LIBADD  =
+endif
 endif
 
 if NETLINK_DEBUG
